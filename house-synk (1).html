@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="theme-color" content="#08121C"/>
+<meta name="description" content="House Synk — book verified home-service professionals, track them live, and hand off with a secure OTP. Cooperative model for Madurai."/>
+<title>House Synk — Trusted home services, synchronized</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%235B8CFF'/><path d='M5 12.5 12 6l7 6.5M7 11v7h10v-7' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B1220; --bg2:#0F172A; --surface:rgba(15,23,42,.78); --surface2:#111B2E;
+  --card:rgba(255,255,255,.08); --card2:rgba(255,255,255,.12);
+  --text:#EAF0FF; --muted:#9AA7C0; --line:rgba(255,255,255,.10);
+  --primary:#5B8CFF; --primary2:#7C5CFF; --success:#22C55E; --danger:#FF5C7A; --warn:#F59E0B;
+  --radius:24px; --shadow:0 20px 60px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{background:radial-gradient(1200px 700px at 20% 0%, #162443 0%, var(--bg) 55%, #05070D 100%);height:100dvh;overflow:hidden;display:flex;justify-content:center;color:var(--text)}
+#app{width:100%;max-width:480px;height:100vh;height:100dvh;position:relative;overflow:hidden;background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0))}
+@media (min-width:520px){ #app{border-left:1px solid var(--line);border-right:1px solid var(--line);box-shadow:0 0 90px rgba(0,0,0,.55)} }
+
+.hidden{display:none!important}
+.sm{font-size:.75rem}
+.pos{color:#8BE0A8}
+.neg{color:#FF9DB0}
+.muted{color:var(--muted)}
+
+/* ---------- views ---------- */
+.view{position:absolute;inset:0;z-index:1;display:none;flex-direction:column;overflow:hidden}
+.view.active{display:flex;animation:viewIn .3s cubic-bezier(.2,.8,.2,1)}
+.view.solid{background:radial-gradient(900px 500px at 20% 0%, #14213C 0%, #0B1220 55%, #070C15 100%)}
+@keyframes viewIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.topbar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(14px + env(safe-area-inset-top)) 16px 12px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,var(--primary),var(--primary2));display:grid;place-items:center;box-shadow:0 12px 30px rgba(91,140,255,.32);flex:none}
+.title{font-size:1rem;font-weight:800;line-height:1.1;letter-spacing:-.02em}
+.subtitle{font-size:.78rem;color:var(--muted);margin-top:2px}
+.topline{display:flex;align-items:center;gap:10px;min-width:0}
+.back{width:38px;height:38px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);font-size:1.15rem;font-weight:800;cursor:pointer;flex:none}
+.back:active{transform:scale(.94)}
+.pill{padding:8px 12px;border:1px solid var(--line);background:rgba(255,255,255,.06);backdrop-filter:blur(16px);border-radius:999px;font-size:.78rem;color:#DDE7FF;white-space:nowrap;flex:none}
+.pill.ok{color:#BDE7C7;border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.12)}
+.pill.info{color:#BFD4FF;border-color:rgba(91,140,255,.4);background:rgba(91,140,255,.12)}
+.pill.warn{color:#FBD58A;border-color:rgba(245,158,11,.4);background:rgba(245,158,11,.12)}
+.pill.dim{color:var(--muted)}
+
+/* ---------- sheet ---------- */
+.sheet{position:relative;z-index:3;margin-top:auto;background:var(--surface);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border:1px solid var(--line);border-bottom:none;border-radius:30px 30px 0 0;box-shadow:var(--shadow);padding:16px 18px calc(18px + env(safe-area-inset-bottom));max-height:76vh;overflow:auto;flex:none}
+.sheet.full{margin-top:0;max-height:none;flex:1;min-height:0}
+.sheet.map-sheet{max-height:56vh}
+.sheet::-webkit-scrollbar{width:4px}
+.sheet::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:99px}
+.drag{width:44px;height:5px;border-radius:999px;background:rgba(255,255,255,.16);margin:0 auto 14px}
+.bar{height:6px;width:72px;border-radius:999px;background:rgba(255,255,255,.14);margin:0 auto 14px}
+.sheet h2{font-size:1.12rem;letter-spacing:-.02em;margin-bottom:8px}
+.section{margin-top:14px}
+.hero{padding:10px 18px 14px;position:relative;z-index:3}
+.hero h1{font-size:2.1rem;font-weight:900;max-width:14ch;line-height:1.06;letter-spacing:-.03em;margin-top:18px}
+.hero p{margin-top:10px;color:var(--muted);font-size:.95rem;line-height:1.55;max-width:34ch}
+.grad{background:linear-gradient(90deg,#7CA4FF,#B79CFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ---------- stats ---------- */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.stat{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:18px;padding:14px 8px;text-align:center}
+.stat b{display:block;font-size:1.02rem;letter-spacing:-.02em}
+.stat span{color:var(--muted);font-size:.72rem}
+
+/* ---------- cards & grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.card{border:1px solid var(--line);background:rgba(255,255,255,.06);border-radius:20px;padding:14px;min-height:100px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.18s ease}
+.card:active{transform:scale(.98)}
+.card.active{border-color:rgba(124,92,255,.8);box-shadow:0 0 0 1px rgba(124,92,255,.35) inset;background:rgba(124,92,255,.14)}
+.emoji{font-size:1.35rem}
+.card .name{font-weight:700;font-size:.95rem}
+.card .meta{color:var(--muted);font-size:.75rem;margin-top:3px}
+.svc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.price{font-size:.68rem;font-weight:800;color:#BFD0FF;background:rgba(91,140,255,.14);border:1px solid rgba(91,140,255,.3);padding:4px 9px;border-radius:999px}
+
+/* ---------- buttons ---------- */
+.btn{width:100%;border:none;border-radius:18px;padding:15px 16px;font-weight:800;font-size:.96rem;cursor:pointer;transition:.18s ease;letter-spacing:-.01em}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;box-shadow:0 14px 30px rgba(91,140,255,.28)}
+.btn-outline{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--line)}
+.btn-success{background:linear-gradient(135deg,#1FBF75,#16A34A);color:#fff;box-shadow:0 14px 30px rgba(31,191,117,.25)}
+.btn-danger{background:linear-gradient(135deg,#FF6B8A,#E11D48);color:#fff}
+.ghost-link{display:block;margin:14px auto 0;background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;text-decoration:underline dotted}
+.ghost-link:active{opacity:.7}
+
+/* ---------- rows / chips ---------- */
+.row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);font-size:.95rem;gap:12px}
+.row:last-child{border-bottom:none}
+.val{font-weight:700;text-align:right}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+.chip{padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-size:.78rem;color:#DCE5FF;cursor:pointer;transition:.15s}
+button.chip{font-family:inherit}
+button.chip:active{transform:scale(.96)}
+.chip.sel{background:rgba(91,140,255,.22);border-color:rgba(91,140,255,.55);color:#E4EDFF;font-weight:700}
+.chip-ok{color:#BDE7C7;border-color:rgba(34,197,94,.45);background:rgba(34,197,94,.12)}
+.chip-warn{color:#FBD58A;border-color:rgba(245,158,11,.45);background:rgba(245,158,11,.12)}
+.chip-info{color:#BFD4FF;border-color:rgba(91,140,255,.45);background:rgba(91,140,255,.12)}
+.chip-dim{color:var(--muted)}
+
+/* ---------- forms ---------- */
+.otp-input{width:100%;font-size:1.9rem;letter-spacing:12px;text-indent:12px;text-align:center;padding:14px 12px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.08);color:var(--text);font-weight:800;outline:none}
+.otp-input:focus{border-color:rgba(91,140,255,.6)}
+.inputbar{width:100%;margin-top:12px;padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);outline:none}
+.select{width:52%;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--text);font-size:.9rem;outline:none;font-family:inherit}
+.select option{background:#0F172A;color:var(--text)}
+.form-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);gap:12px}
+.form-row label{color:var(--muted);font-size:.9rem}
+
+/* ---------- worker / request cards ---------- */
+.worker-card{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.07);border:1px solid var(--line);border-radius:18px;padding:12px}
+.avatar{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--primary2));display:grid;place-items:center;font-weight:800;font-size:1rem;flex:none}
+.avatar.sm{width:38px;height:38px;font-size:.9rem;border-radius:12px}
+.wc-actions{display:flex;gap:8px}
+.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:rgba(255,255,255,.07);font-size:1rem;cursor:pointer;display:grid;place-items:center;transition:.15s}
+.icon-btn:active{transform:scale(.94)}
+.row-customer{display:flex;gap:12px;align-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:16px;padding:12px}
+
+.mini-job{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,rgba(91,140,255,.16),rgba(124,92,255,.10));border:1px solid rgba(91,140,255,.35);border-radius:18px;padding:13px 14px;cursor:pointer;transition:.15s}
+.mini-job:active{transform:scale(.99)}
+.mini-job.static{cursor:default;background:rgba(255,255,255,.05);border-color:var(--line)}
+.mini-job.pulse-border{animation:borderPulse 2s infinite}
+@keyframes borderPulse{50%{box-shadow:0 0 0 4px rgba(245,158,11,.14)}}
+.mj-left{display:flex;gap:12px;align-items:center;min-width:0}
+.mj-left b{font-size:.92rem}
+.mj-icon{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.1);display:grid;place-items:center;font-size:1.15rem;flex:none}
+.mj-right{display:flex;align-items:center;gap:8px;flex:none}
+.mj-arrow{color:var(--muted);font-size:1.25rem;line-height:1}
+
+.hist-row{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.hist-row:last-child{border-bottom:none}
+.h-icon{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.07);display:grid;place-items:center;font-size:1.1rem;flex:none}
+.h-main{flex:1;min-width:0}
+.h-main b{font-size:.9rem}
+.h-right{text-align:right}
+.h-right b{font-size:.9rem}
+.empty{padding:16px;border:1px dashed var(--line);border-radius:14px;color:var(--muted);font-size:.84rem;text-align:center;line-height:1.5}
+.notice{padding:16px;border-radius:16px;background:rgba(255,255,255,.05);border:1px dashed var(--line);color:var(--muted);font-size:.9rem;text-align:center;margin:10px 0}
+
+.req-card{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(255,255,255,.05));border:1px solid rgba(245,158,11,.4);border-radius:20px;padding:16px;margin-bottom:16px}
+.req-icon{width:54px;height:54px;font-size:1.6rem;display:grid;place-items:center;background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.4);border-radius:16px;flex:none}
+.req-earn{text-align:right;flex:none}
+.req-earn b{display:block;font-size:1.15rem;color:#8BE0A8}
+.svc-banner{display:flex;align-items:center;gap:12px;background:rgba(91,140,255,.12);border:1px solid rgba(91,140,255,.3);border-radius:18px;padding:14px;margin-bottom:14px}
+.sb-icon{width:44px;height:44px;font-size:1.4rem;display:grid;place-items:center;background:rgba(255,255,255,.08);border-radius:14px;flex:none}
+.sb-price{margin-left:auto;font-weight:800;color:#BFD0FF;font-size:.92rem}
+.demo-otp{display:flex;justify-content:space-between;align-items:center;gap:10px;background:rgba(245,158,11,.1);border:1px dashed rgba(245,158,11,.45);border-radius:14px;padding:10px 12px;font-size:.8rem;color:#F5C97B;margin:12px 0}
+.demo-otp b{color:#FFD98A;font-size:1rem;letter-spacing:3px}
+
+/* ---------- OTP ---------- */
+.otp-card{background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(91,140,255,.10));border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:14px}
+.otp-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}
+.otp-head b{font-size:.92rem}
+.otp-row{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.otp-seg{display:flex;gap:10px}
+.otp-box{width:56px;height:70px;border-radius:16px;background:rgba(255,255,255,.07);border:1px solid var(--line);display:grid;place-items:center;font-size:1.85rem;font-weight:800}
+.otp-box.hot{border-color:rgba(34,197,94,.6);background:rgba(34,197,94,.12);animation:glowPulse 1.6s ease-in-out infinite}
+@keyframes glowPulse{50%{box-shadow:0 0 0 5px rgba(34,197,94,.16)}}
+.copy-btn{background:rgba(91,140,255,.15);border-color:rgba(91,140,255,.4);color:#BFD4FF}
+
+/* ---------- timeline ---------- */
+.tl{list-style:none;display:flex;flex-direction:column;margin:6px 0 4px}
+.tl li{display:flex;gap:12px;align-items:center;position:relative;padding:7px 0;font-size:.86rem;color:var(--muted)}
+.tl .dot{width:22px;height:22px;border-radius:50%;border:2px solid rgba(255,255,255,.22);display:grid;place-items:center;font-size:.62rem;flex:none}
+.tl li:not(:last-child)::before{content:'';position:absolute;left:10px;top:29px;bottom:-4px;width:2px;background:rgba(255,255,255,.12)}
+.tl li.done{color:var(--text)}
+.tl li.done .dot{background:rgba(34,197,94,.2);border-color:var(--success);color:#7CE3A1}
+.tl li.current{color:var(--text);font-weight:700}
+.tl li.current .dot{border-color:var(--primary);box-shadow:0 0 0 4px rgba(91,140,255,.18);animation:tlPulse 1.5s infinite}
+@keyframes tlPulse{50%{box-shadow:0 0 0 7px rgba(91,140,255,.04)}}
+
+/* ---------- receipt ---------- */
+.receipt{background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:20px;padding:16px}
+.rc-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.rc-head b{letter-spacing:-.01em}
+.rc-badge{color:#7CE3A1;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);padding:5px 10px;border-radius:999px;font-size:.74rem;font-weight:700}
+.rc-row{display:flex;justify-content:space-between;padding:7px 0;font-size:.9rem;color:var(--muted);gap:10px}
+.rc-row b{color:var(--text);text-align:right}
+.rc-row.total{border-top:1px dashed var(--line);margin-top:6px;padding-top:12px;font-size:.98rem}
+.rc-row.total b{color:#8BE0A8;font-size:1.15rem}
+.rc-line{height:1px;background:var(--line);margin:8px 0}
+.rc-paid{margin-top:12px;text-align:center;font-size:.8rem;color:#7CE3A1;background:rgba(34,197,94,.1);border:1px dashed rgba(34,197,94,.35);padding:9px;border-radius:12px;font-weight:600}
+.receipt.slim{max-width:300px}
+.tip-label{font-size:.85rem;font-weight:700;margin-bottom:10px}
+.rate-box{text-align:center}
+.stars{display:flex;gap:6px;justify-content:center}
+.star{font-size:2rem;line-height:1;cursor:pointer;color:#3A4A6B;transition:.15s;background:none;border:none;padding:2px}
+.star.on{color:#FFC24B}
+.star:active{transform:scale(1.18)}
+.amount{font-size:2.6rem;font-weight:800;color:#8BE0A8;margin:8px 0 4px;letter-spacing:-.02em}
+.center-sub{color:var(--muted);font-size:.9rem}
+
+/* ---------- online switch ---------- */
+.online-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:18px;padding:14px}
+.switch{position:relative;width:48px;height:28px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid var(--line);cursor:pointer;transition:.2s;flex:none}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;transition:.2s}
+.switch.on{background:linear-gradient(135deg,#1FBF75,#16A34A);border-color:transparent}
+.switch.on::after{left:22px}
+
+/* ---------- timers / center ---------- */
+.timer-big{text-align:center;font-size:2.7rem;font-weight:800;letter-spacing:2px;margin:8px 0 2px;font-variant-numeric:tabular-nums;color:#BDE7C7}
+.center{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:26px;position:relative;z-index:3}
+.center h2{font-size:1.45rem;letter-spacing:-.02em}
+.center p{color:var(--muted);margin-top:8px;max-width:30ch;line-height:1.5}
+
+/* ---------- radar ---------- */
+.radar{width:220px;height:220px;position:relative;margin:26px auto 10px}
+.radar .ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(91,140,255,.28)}
+.radar .r2{inset:26%}
+.radar .r3{inset:43%}
+.radar .sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg, rgba(91,140,255,.5), rgba(91,140,255,.08) 70deg, transparent 95deg);animation:spin 2.6s linear infinite}
+.radar .dot{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;background:var(--primary);box-shadow:0 0 18px rgba(91,140,255,.95)}
+.blip{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--success);opacity:0;animation:blip 2.6s infinite}
+.blip.b1{left:28%;top:46%}
+.blip.b2{left:64%;top:30%;animation-delay:.9s}
+.blip.b3{left:56%;top:62%;animation-delay:1.7s}
+@keyframes blip{0%,12%{opacity:0;transform:scale(.4)}28%{opacity:1;transform:scale(1)}55%{opacity:0;transform:scale(1.7)}100%{opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.find-foot{display:flex;justify-content:space-between;align-items:center;width:100%;max-width:300px;margin-top:34px}
+.cancel-link{color:var(--danger);font-size:.85rem;font-weight:700;text-decoration:none;flex:none}
+
+/* ---------- check animation ---------- */
+.check-wrap{width:88px;height:88px;margin:0 auto 16px}
+.check-wrap svg{width:100%;height:100%}
+.check-circle{stroke:var(--success);stroke-width:3;fill:rgba(34,197,94,.10);stroke-dasharray:260;stroke-dashoffset:260;animation:draw 1s .1s ease forwards}
+.check-mark{stroke:var(--success);stroke-width:4;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:60;stroke-dashoffset:60;animation:draw .5s .75s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+
+/* ---------- toasts ---------- */
+#toasts{position:absolute;top:16px;left:0;right:0;z-index:60;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 16px}
+.toast{pointer-events:auto;background:rgba(17,25,46,.94);border:1px solid var(--line);backdrop-filter:blur(12px);padding:10px 16px;border-radius:14px;font-size:.84rem;font-weight:600;display:flex;gap:8px;align-items:center;transform:translateY(-14px);opacity:0;transition:.25s;box-shadow:var(--shadow);max-width:100%}
+.toast.show{transform:none;opacity:1}
+.toast.success{border-color:rgba(34,197,94,.5)}
+.toast.error{border-color:rgba(255,92,122,.55)}
+
+/* ---------- splash extras ---------- */
+.splash-foot{display:flex;justify-content:space-between;align-items:center;margin-top:20px;font-size:.74rem;color:var(--muted);gap:10px}
+.splash-foot a{color:var(--muted);text-decoration:underline;white-space:nowrap}
+.splash-foot a.armed{color:var(--danger);text-decoration:none;font-weight:700}
+
+/* ---------- map layer ---------- */
+#map-layer{position:absolute;inset:0;z-index:0;background:#0A1424}
+#city-map{width:100%;height:100%;display:block}
+.map-overlay{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(7,12,22,.55) 0%,rgba(7,12,22,0) 22%,rgba(7,12,22,0) 52%,rgba(7,12,22,.8) 100%)}
+.map-chip{position:absolute;top:66px;left:14px;z-index:2;display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:rgba(10,17,30,.82);border:1px solid var(--line);backdrop-filter:blur(10px);font-size:.7rem;font-weight:800;letter-spacing:1.5px;color:#DDE7FF}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#22C55E;box-shadow:0 0 10px #22C55E;animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.35}}
+.map-eta{position:absolute;top:66px;left:50%;transform:translateX(-50%);z-index:2;padding:7px 14px;border-radius:999px;background:rgba(10,17,30,.86);border:1px solid var(--line);backdrop-filter:blur(10px);font-size:.8rem;font-weight:700;white-space:nowrap}
+.map-compass{position:absolute;top:78px;right:14px;z-index:2;width:28px;height:28px;border-radius:50%;background:rgba(10,17,30,.8);border:1px solid var(--line);display:grid;place-items:center;font-size:.66rem;font-weight:800;color:#9DB4E4}
+.map-ctrl{position:absolute;bottom:26px;right:14px;z-index:2;display:flex;flex-direction:column;gap:8px}
+.map-ctrl button{width:36px;height:36px;border-radius:12px;background:rgba(10,17,30,.86);border:1px solid var(--line);color:var(--text);font-size:1.05rem;font-weight:800;cursor:pointer;backdrop-filter:blur(8px)}
+.map-ctrl button:active{transform:scale(.94)}
+.map-scale{position:absolute;bottom:28px;left:16px;z-index:2;display:flex;align-items:center;gap:8px;font-size:.66rem;color:#9DB4E4;background:rgba(10,17,30,.72);padding:5px 10px;border-radius:999px;border:1px solid var(--line)}
+.scale-bar{display:block;width:36px;height:3px;background:rgba(255,255,255,.75);border-radius:2px}
+#city-map .pulse{transform-box:fill-box;transform-origin:center;animation:mapPulse 2.2s ease-out infinite}
+#city-map .p2{animation-delay:1.1s}
+@keyframes mapPulse{0%{transform:scale(.5);opacity:.9}100%{transform:scale(2.6);opacity:0}}
+#route{animation:dashMove 1.1s linear infinite}
+@keyframes dashMove{to{stroke-dashoffset:-36}}
+
+/* ---------- misc ---------- */
+@keyframes shake{10%,90%{transform:translateX(-2px)}20%,80%{transform:translateX(4px)}30%,50%,70%{transform:translateX(-6px)}40%,60%{transform:translateX(6px)}}
+.shake{animation:shake .5s}
+button:focus-visible,.back:focus-visible,a:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============ LIVE MAP LAYER (built-in simulation, works offline) ============ -->
+  <div id="map-layer" class="hidden" aria-hidden="true">
+    <svg id="city-map" viewBox="0 0 480 800" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M40 0H0V40" fill="none" stroke="rgba(148,178,255,.05)" stroke-width="1"/>
+        </pattern>
+        <linearGradient id="routeGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#5B8CFF"/><stop offset="1" stop-color="#22C55E"/>
+        </linearGradient>
+        <radialGradient id="gWorker"><stop offset="0" stop-color="rgba(34,197,94,.5)"/><stop offset="1" stop-color="rgba(34,197,94,0)"/></radialGradient>
+        <radialGradient id="gHome"><stop offset="0" stop-color="rgba(91,140,255,.45)"/><stop offset="1" stop-color="rgba(91,140,255,0)"/></radialGradient>
+      </defs>
+      <rect width="480" height="800" fill="#0A1424"/>
+      <g id="world">
+        <rect width="480" height="800" fill="url(#grid)"/>
+        <g fill="#101C31">
+          <rect x="18" y="18" width="86" height="96" rx="10"/>
+          <rect x="150" y="30" width="92" height="80" rx="10"/>
+          <rect x="268" y="20" width="66" height="100" rx="10"/>
+          <rect x="392" y="30" width="70" height="90" rx="10"/>
+          <rect x="20" y="250" width="78" height="86" rx="10"/>
+          <rect x="150" y="255" width="64" height="76" rx="10"/>
+          <rect x="250" y="250" width="78" height="82" rx="10"/>
+          <rect x="380" y="250" width="80" height="80" rx="10"/>
+          <rect x="20" y="510" width="82" height="70" rx="10"/>
+          <rect x="170" y="515" width="70" height="64" rx="10"/>
+          <rect x="280" y="510" width="52" height="70" rx="10"/>
+          <rect x="390" y="505" width="72" height="74" rx="10"/>
+          <rect x="20" y="725" width="90" height="60" rx="10"/>
+          <rect x="150" y="730" width="90" height="60" rx="10"/>
+          <rect x="300" y="725" width="110" height="64" rx="10"/>
+        </g>
+        <ellipse cx="80" cy="352" rx="58" ry="44" fill="#0F2E1F"/>
+        <circle cx="62" cy="340" r="9" fill="#1C4A32"/><circle cx="92" cy="356" r="11" fill="#1C4A32"/><circle cx="74" cy="368" r="7" fill="#1C4A32"/>
+        <g stroke="#1B2A47" fill="none" stroke-linecap="round">
+          <path d="M-20 470 C 130 440, 320 500, 500 450" stroke-width="30"/>
+          <path d="M-20 200 C 150 230, 330 180, 500 220" stroke-width="16"/>
+          <path d="M-20 700 C 150 670, 330 720, 500 690" stroke-width="14"/>
+          <path d="M120 -20 C 140 220, 100 480, 140 820" stroke-width="20"/>
+          <path d="M360 -20 C 340 180, 390 420, 350 820" stroke-width="16"/>
+          <path d="M232 218 L 226 468" stroke-width="8"/>
+          <path d="M238 472 C 248 590, 230 650, 238 695" stroke-width="8"/>
+        </g>
+        <g stroke="#2E4470" stroke-width="1.6" stroke-dasharray="14 12" fill="none" opacity=".7">
+          <path d="M-20 470 C 130 440, 320 500, 500 450"/>
+        </g>
+        <g fill="#44587E" font-size="10" letter-spacing="2">
+          <text x="58" y="452">THIRUVALLUVAR SALAI</text>
+          <text x="200" y="190">K K NAGAR</text>
+          <text x="382" y="160">MELAMADA</text>
+          <text x="28" y="662">AVINASHI ROAD</text>
+          <text x="290" y="310">MEENAKSHI AMPIL</text>
+        </g>
+        <g transform="translate(306,286)"><rect x="-9" y="-9" width="18" height="18" rx="5" fill="#2A2340" stroke="#B78A2E" stroke-width="1.5"/><text y="4.5" text-anchor="middle" font-size="10">🛕</text></g>
+        <path id="route-glow" d="M410 110 C 395 200, 385 300, 372 400 C 360 470, 300 520, 220 545 C 195 553, 170 557, 150 560" fill="none" stroke="rgba(91,140,255,.18)" stroke-width="14" stroke-linecap="round"/>
+        <path id="route" d="M410 110 C 395 200, 385 300, 372 400 C 360 470, 300 520, 220 545 C 195 553, 170 557, 150 560" fill="none" stroke="url(#routeGrad)" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="10 8"/>
+        <g transform="translate(410,110)">
+          <circle r="6" fill="#0E1B33" stroke="#5B8CFF" stroke-width="2"/>
+          <text id="worker-start-label" y="-14" text-anchor="middle" font-size="10" fill="#8FA5CE">Ravi • start</text>
+        </g>
+        <g id="home-marker" transform="translate(150,560)">
+          <circle class="pulse" r="18" fill="rgba(91,140,255,.4)"/>
+          <circle class="pulse p2" r="18" fill="rgba(91,140,255,.3)"/>
+          <circle r="24" fill="url(#gHome)"/>
+          <circle r="14" fill="#5B8CFF" stroke="#EAF0FF" stroke-width="3"/>
+          <path d="M -6.5 0.5 L 0 -6.5 L 6.5 0.5 M -4.5 -1.5 L -4.5 6 L 4.5 6 L 4.5 -1.5" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <text y="36" text-anchor="middle" font-size="10" fill="#9DB4E4" letter-spacing="1.5">HOME</text>
+        </g>
+        <g id="worker-marker" style="display:none" transform="translate(410 110)">
+          <circle r="26" fill="url(#gWorker)"/>
+          <circle r="13" fill="#0D1B12" stroke="#22C55E" stroke-width="3"/>
+          <text text-anchor="middle" dy="5" font-size="13">🛵</text>
+        </g>
+      </g>
+    </svg>
+    <div class="map-overlay"></div>
+    <div class="map-chip"><span class="live-dot"></span>LIVE</div>
+    <div class="map-eta hidden" id="map-eta">🛵 6 min away</div>
+    <div class="map-compass">N</div>
+    <div class="map-ctrl">
+      <button onclick="zoom(0.2)" aria-label="Zoom in">+</button>
+      <button onclick="zoom(-0.2)" aria-label="Zoom out">−</button>
+      <button onclick="worldScale=1;applyWorld()" aria-label="Reset map">⌖</button>
+    </div>
+    <div class="map-scale"><span class="scale-bar"></span>200 m</div>
+  </div>
+
+  <div id="toasts"></div>
+
+  <!-- ============ SPLASH ============ -->
+  <section class="view solid active" id="v-splash">
+    <div class="hero">
+      <div class="topbar" style="padding:0 0 20px">
+        <div class="brand">
+          <div class="logo"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 9.8V20h13V9.8"/><path d="M10 20v-5.5h4V20"/></svg></div>
+          <div><div class="title">House Synk</div><div class="subtitle">Trusted home services, synchronized</div></div>
+        </div>
+        <div class="pill">Madurai • TN</div>
+      </div>
+      <h1>Home help, <span class="grad">synchronized</span>.</h1>
+      <p>Book verified professionals, track their arrival live on the map, and hand off securely with OTP — all in one place.</p>
+      <div class="stats">
+        <div class="stat"><b>4.9★</b><span>Avg rating</span></div>
+        <div class="stat"><b>&lt; 2 min</b><span>Match time</span></div>
+        <div class="stat"><b>100%</b><span>Verified pros</span></div>
+      </div>
+    </div>
+    <div class="sheet" style="margin-top:auto">
+      <div class="drag"></div>
+      <h2>How will you use House Synk?</h2>
+      <button class="btn btn-primary" onclick="startApp('customer')">👤&nbsp; I need a service <span class="muted sm">— Customer</span></button>
+      <button class="btn btn-outline section" onclick="startApp('worker')">🛠️&nbsp; I'm a professional <span class="muted sm">— Worker</span></button>
+      <div class="splash-foot">
+        <span>House Synk v2.0 • Cooperative model</span>
+        <a id="reset-link" href="#" onclick="resetDemo();return false">Reset demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CUSTOMER: HOME ============ -->
+  <section class="view solid" id="v-c-home">
+    <div class="topbar">
+      <div class="topline"><button class="back" onclick="nav('splash')" aria-label="Back">‹</button>
+        <div><div class="title">Hi, Arjun 👋</div><div class="subtitle">What do you need today?</div></div>
+      </div>
+      <div class="pill">Customer</div>
+    </div>
+    <div class="sheet full">
+      <div class="bar"></div>
+      <h2>Choose a service</h2>
+      <div class="chips"><span class="chip chip-info">Verified pros</span><span class="chip chip-info">Live tracking</span><span class="chip chip-info">OTP secured</span></div>
+      <div id="c-active-job" class="section" style="display:none"></div>
+      <div class="grid section" id="svc-grid"></div>
+      <button class="btn btn-primary section" onclick="nav('c-confirm')">Continue</button>
+      <h2 style="margin-top:24px">Recent jobs</h2>
+      <div id="c-history"></div>
+    </div>
+  </section>
+
+  <!-- ============ CUSTOMER: CONFIRM ============ -->
+  <section class="view solid" id="v-c-confirm">
+    <div class="topbar">
+      <div class="topline"><button class="back" onclick="nav('c-home')" aria-label="Back">‹</button>
+        <div><div class="title">Confirm booking</div><div class="subtitle">Review before we match</div></div>
+      </div>
+      <div class="pill">Secure</div>
+    </div>
+    <div class="sheet full">
+      <div class="bar"></div>
+      <h2>Booking summary</h2>
+      <div class="svc-banner"><span class="sb-icon" id="lbl-service-icon">⚡</span><div><b id="lbl-service-name">Electrician</b><div class="muted sm">Verified • background checked</div></div><div class="sb-price" id="lbl-est">₹250 – ₹400</div></div>
+      <div class="form-row"><label>Service area</label><select id="area-select" class="select" onchange="onAreaChange(this.value)"></select></div>
+      <div class="form-row"><label>When</label>
+        <div class="chips" style="margin:0">
+          <span class="chip sel">ASAP</span>
+          <button class="chip" onclick="toast('Scheduled booking coming soon (demo)','info','🗓️')">Schedule later</button>
+        </div>
+      </div>
+      <div class="row"><span class="muted">Address</span><span class="val" id="lbl-address">Flat 4, Koodal, Madurai</span></div>
+      <div class="row"><span class="muted">Payment</span><span class="val">UPI •••@okaxis</span></div>
+      <div class="row" style="border-bottom:none"><span class="muted">Estimated total <span class="sm">(incl. ₹20 fee)</span></span><span class="val" id="lbl-total" style="color:#8BE0A8;font-size:1.05rem">₹345</span></div>
+      <button class="btn btn-primary section" onclick="book()">Confirm &amp; Find Worker</button>
+      <p class="muted sm" style="text-align:center;margin-top:10px">Includes cooperative fee &amp; member welfare contribution.</p>
+    </div>
+  </section>
+
+  <!-- ============ CUSTOMER: FINDING ============ -->
+  <section class="view solid" id="v-c-finding">
+    <div class="center">
+      <div class="radar" aria-hidden="true">
+        <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>
+        <div class="sweep"></div>
+        <span class="blip b1"></span><span class="blip b2"></span><span class="blip b3"></span>
+        <div class="dot"></div>
+      </div>
+      <h2>Finding your professional</h2>
+      <p id="find-msg">Scanning nearby professionals…</p>
+      <div class="pill" id="find-chip" style="margin-top:16px">⚡ Electrician • Koodal</div>
+      <div class="find-foot">
+        <span class="muted sm">Avg match time in your area: 48 sec</span>
+        <a href="#" class="cancel-link" onclick="cancelRequest();return false">Cancel</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CUSTOMER: ACTIVE (map) ============ -->
+  <section class="view" id="v-c-active">
+    <div class="topbar">
+      <div class="topline"><button class="back" onclick="nav('c-home')" aria-label="Back">‹</button>
+        <div><div class="title" id="ca-title">Worker en route</div><div class="subtitle" id="ca-sub">Track arrival live on the map</div></div>
+      </div>
+      <div class="pill info" id="ca-pill">Arriving in 6 min</div>
+    </div>
+    <div class="sheet map-sheet">
+      <div class="bar"></div>
+      <div class="worker-card">
+        <div class="avatar" id="ca-worker-initials">RK</div>
+        <div style="flex:1;min-width:0"><b id="ca-worker-name">Ravi Kumar</b><div class="muted sm" id="ca-worker-meta">★ 4.9 · 214 jobs · Govt ID verified</div></div>
+        <div class="wc-actions">
+          <button class="icon-btn" onclick="toast('Calling the worker… (demo)','info','📞')" aria-label="Call">📞</button>
+          <button class="icon-btn" onclick="toast('Chat opened (demo)','info','💬')" aria-label="Chat">💬</button>
+        </div>
+      </div>
+      <ul class="tl section" id="ca-timeline"></ul>
+      <div class="otp-card section">
+        <div class="otp-head"><b>Handover OTP</b><span class="muted sm" id="ca-otp-hint">Worker will ask for this on arrival</span></div>
+        <div class="otp-row">
+          <div class="otp-seg"><span class="otp-box">·</span><span class="otp-box">·</span><span class="otp-box">·</span><span class="otp-box">·</span></div>
+          <button class="icon-btn copy-btn" onclick="copyOtp()" aria-label="Copy OTP">⧉</button>
+        </div>
+      </div>
+      <button id="ca-demo-verify" class="ghost-link" style="display:none" onclick="demoVerify()">Demo: worker enters the OTP now</button>
+      <p class="muted sm section" id="ca-note"></p>
+    </div>
+  </section>
+
+  <!-- ============ CUSTOMER: COMPLETE / RECEIPT ============ -->
+  <section class="view solid" id="v-c-complete">
+    <div class="topbar">
+      <div class="topline"><button class="back" onclick="nav('c-home')" aria-label="Back">‹</button>
+        <div><div class="title">Job complete</div><div class="subtitle">Payment confirmed</div></div>
+      </div>
+      <div class="pill ok">Paid</div>
+    </div>
+    <div class="sheet full">
+      <div class="bar"></div>
+      <div class="receipt">
+        <div class="rc-head"><div><b>House Synk</b><div class="muted sm" id="cc-id">HS-0000</div></div><div class="rc-badge">✓ Paid</div></div>
+        <div class="rc-row"><span>Service</span><b id="cc-service">⚡ Electrician</b></div>
+        <div class="rc-row"><span>Worker</span><b id="cc-worker">—</b></div>
+        <div class="rc-row"><span>Duration</span><b id="cc-duration">—</b></div>
+        <div class="rc-line"></div>
+        <div class="rc-row"><span>Service fee</span><b id="cc-fee">₹0</b></div>
+        <div class="rc-row"><span>House Synk fee</span><b>₹20</b></div>
+        <div class="rc-row"><span>Tip</span><b id="cc-tip">₹0</b></div>
+        <div class="rc-row total"><span>Total</span><b id="cc-total">₹0</b></div>
+        <div class="rc-paid">Paid via UPI •••@okaxis</div>
+      </div>
+      <div class="section">
+        <div class="tip-label">Add a tip (100% goes to the worker)</div>
+        <div class="chips">
+          <button class="chip tip-chip sel" data-tip="0" onclick="setTip(0)">No tip</button>
+          <button class="chip tip-chip" data-tip="20" onclick="setTip(20)">₹20</button>
+          <button class="chip tip-chip" data-tip="50" onclick="setTip(50)">₹50</button>
+        </div>
+      </div>
+      <div class="section rate-box">
+        <div class="tip-label">Rate your experience</div>
+        <div class="stars">
+          <button class="star on" onclick="setRating(1)" aria-label="1 star">★</button>
+          <button class="star on" onclick="setRating(2)" aria-label="2 stars">★</button>
+          <button class="star on" onclick="setRating(3)" aria-label="3 stars">★</button>
+          <button class="star on" onclick="setRating(4)" aria-label="4 stars">★</button>
+          <button class="star on" onclick="setRating(5)" aria-label="5 stars">★</button>
+        </div>
+      </div>
+      <button class="btn btn-primary section" onclick="ccDone()">Done — back to home</button>
+    </div>
+  </section>
+
+  <!-- ============ WORKER: HOME ============ -->
+  <section class="view solid" id="v-w-home">
+    <div class="topbar">
+      <div class="topline"><button class="back" onclick="nav('splash')" aria-label="Back">‹</button>
+        <div><div class="title">Ravi Kumar</div><div class="subtitle">Worker dashboard • Electrician / Plumber / AC</div></div>
+      </div>
+      <div class="pill ok" id="w-online-pill">Online</div>
+    </div>
+    <div class="sheet full">
+      <div class="bar"></div>
+      <h2 id="w-greet">Good evening, Ravi</h2>
+      <div class="online-row">
+        <div><b style="font-size:.92rem">Availability</b><div class="muted sm" id="w-online-label">Online — receiving requests</div></div>
+        <div class="switch on" id="w-online" onclick="toggleOnline()" role="switch" aria-label="Toggle online"></div>
+      </div>
+      <div class="stats section">
+        <div class="stat"><b id="w-earn">₹420</b><span>Today's earnings</span></div>
+        <div class="stat"><b id="w-jobs">3</b><span>Jobs today</span></div>
+        <div class="stat"><b id="w-rating">4.9</b><span>Rating</span></div>
+      </div>
+      <div id="w-banner" class="section"></div>
+      <button class="btn btn-primary section" id="w-sim" onclick="simulateIncoming()">📥&nbsp; Simulate incoming job</button>
+      <h2 style="margin-top:22px">Recent jobs</h2>
+      <div id="w-history"></div>
+    </div>
+  </section>
+
+  <!-- ============ WORKER: INCOMING ============ -->
+  <section class="view solid" id="v-w-incoming">
+    <div class="topbar">
+      <div class="topline"><button class="back" onclick="nav('w-home')" aria-label="Back">‹</button>
+        <div><div class="title">New request</div><div class="subtitle">Accept or decline</div></div>
+      </div>
+      <div class="pill warn">Incoming</div>
+    </div>
+    <div class="sheet full">
+      <div class="bar"></div>
+      <div class="req-card">
+        <div class="req-icon" id="wi-icon">⚡</div>
+        <div style="flex:1;min-width:0">
+          <b id="wi-service">Electrician</b>
+          <div class="muted sm" id="wi-meta">Koodal • 1.4 km • est. ₹325</div>
+          <div class="muted sm" style="margin-top:6px">Customer <b id="wi-cust" style="color:var(--text)">Arjun V.</b>
+            <span class="chip chip-ok" style="padding:2px 9px;font-size:.66rem">Verified</span></div>
+        </div>
+        <div class="req-earn"><span class="muted sm">You earn</span><b id="wi-earn">₹305</b></div>
+      </div>
+      <div id="wi-otp-demo" class="demo-otp" style="display:none"></div>
+      <button class="btn btn-success" onclick="acceptJob()">✅ Accept job</button>
+      <button class="btn btn-outline section" onclick="declineJob()">Decline</button>
+      <p class="muted sm" style="text-align:center;margin-top:14px">Declining often lowers your acceptance rate. Stay available for the best earnings.</p>
+    </div>
+  </section>
+
+  <!-- ============ WORKER: ACTIVE (map) ============ -->
+  <section class="view" id="v-w-active">
+    <div class="topbar">
+      <div class="topline"><button class="back" onclick="nav('w-home')" aria-label="Back">‹</button>
+        <div><div class="title" id="wa-title">Navigate to customer</div><div class="subtitle">Job live on the map</div></div>
+      </div>
+      <div class="pill info" id="wa-pill">6 min away</div>
+    </div>
+    <div class="sheet map-sheet">
+      <div class="bar"></div>
+      <div class="row-customer">
+        <div class="avatar sm" id="wa-cust-avatar">A</div>
+        <div style="flex:1;min-width:0"><b id="wa-cust">Arjun V. • Koodal</b><div class="muted sm" id="wa-cust-sub">⚡ Electrician • est. ₹325</div></div>
+      </div>
+      <div id="wa-body" class="section"></div>
+    </div>
+  </section>
+
+  <!-- ============ WORKER: COMPLETE ============ -->
+  <section class="view solid" id="v-w-complete">
+    <div class="center">
+      <div class="check-wrap">
+        <svg id="wc-check-svg" viewBox="0 0 84 84" aria-hidden="true">
+          <circle class="check-circle" cx="42" cy="42" r="38"/>
+          <path class="check-mark" d="M26 43.5 37 54 58 32"/>
+        </svg>
+      </div>
+      <h2>Job completed!</h2>
+      <p class="center-sub" id="wc-cust">Arjun V. • Koodal</p>
+      <div class="amount" id="wc-amount">+₹305</div>
+      <div class="receipt slim section">
+        <div class="rc-row"><span>Base pay</span><b id="wc-base">₹325</b></div>
+        <div class="rc-row"><span>Cooperative fee</span><b id="wc-fee" class="neg">−₹20</b></div>
+        <div class="rc-line"></div>
+        <div class="rc-row total"><span>Added to earnings</span><b id="wc-net">₹305</b></div>
+      </div>
+      <button class="btn btn-primary section" style="max-width:280px" onclick="nav('w-home')">Back to dashboard</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+'use strict';
+/* ================= DATA ================= */
+const SERVICES = [
+  {name:'Electrician',  icon:'⚡', from:250, to:400, meta:'Wiring • fans • repairs'},
+  {name:'Plumber',      icon:'🚿', from:200, to:350, meta:'Leaks • taps • fittings'},
+  {name:'Caregiver',    icon:'🫶', from:400, to:600, meta:'Elderly & daily help'},
+  {name:'Mason',        icon:'🧱', from:300, to:500, meta:'Brick • plaster • repair'},
+  {name:'Painter',      icon:'🎨', from:300, to:450, meta:'Walls • touch-ups'},
+  {name:'AC Service',   icon:'❄️', from:350, to:500, meta:'Cleaning • gas • repair'},
+  {name:'Pest Control', icon:'🐜', from:500, to:800, meta:'Termite & rodent'},
+  {name:'Deep Clean',   icon:'🧹', from:600, to:900, meta:'Home & kitchen'},
+];
+const AREAS = ['Koodal','Gandhi Nagar','Thiruvalluvar Nagar','K.K. Nagar','Melamada','Avinashi Road','Perumal Bazaar','Alagappanagar'];
+const WORKERS = {
+  ravi:    {name:'Ravi Kumar',   rating:4.9, jobs:214, distance:'1.4 km'},
+  karthik: {name:'Karthik M.',   rating:4.8, jobs:167, distance:'1.9 km'},
+};
+const FEE = 20;
+const ME = {name:'Arjun V.', upi:'arjun@okaxis'};
+const SYNTH_CUSTOMERS = ['Anita R.','Joseph M.','Priya S.','Meena D.'];
+const SEARCH_MSGS = ['Scanning nearby professionals…','Checking availability & ratings…','Verifying ID & background check…','Reserving your best match…'];
+
+/* ================= STATE ================= */
+const LS_KEY = 'housesynk_v1';
+const DEFAULT_STATE = () => ({v:1, job:null, customerJobs:[], workerJobs:[], earnings:420, wJobs:3, rating:4.9, online:true});
+function loadState(){ try{ const s = JSON.parse(localStorage.getItem(LS_KEY)); if(s && s.v===1) return s; }catch(e){} return null; }
+let state = loadState() || DEFAULT_STATE();
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+
+let selService = SERVICES[0], selArea = AREAS[0];
+let currentView = 'splash';
+let tip = 0, rating = 5;
+let searchTimer = null, msgTimer = null, travelRAF = null;
+let worldScale = 1;
+let routePath = null, workerMark = null, routeLen = 0;
+let resetArmed = false, resetTimer = null;
+
+/* ================= HELPERS ================= */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const rupee = n => '₹' + Number(n).toLocaleString('en-IN');
+const rand = (a,b) => Math.floor(Math.random()*(b-a+1)) + a;
+const estOf = s => Math.round((s.from+s.to)/2/5)*5;
+const today = () => new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+function fmtElapsed(ts){ const s = Math.max(0, Math.floor((Date.now()-ts)/1000)); return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0'); }
+function statusLabel(s){ return {searching:'Finding worker', en_route:'On the way', arrived:'Worker arrived', in_progress:'In progress', completed:'Completed'}[s] || s; }
+function statusChip(s){ const c = {searching:'warn', en_route:'info', arrived:'ok', in_progress:'ok', completed:'dim'}[s] || 'dim'; return '<span class="chip chip-'+c+'">'+statusLabel(s)+'</span>'; }
+function toast(msg, type, icon){
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type||'info');
+  t.innerHTML = '<span>'+(icon||'')+'</span><span>'+msg+'</span>';
+  $('#toasts').appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(), 300); }, 3200);
+}
+
+/* ================= NAV ================= */
+function nav(id){
+  currentView = id;
+  const j = state.job;
+  if(id==='c-home') renderCHome();
+  else if(id==='w-home') renderWHome();
+  else if(id==='c-active' && j) renderCA();
+  else if(id==='w-active' && j) renderWActive();
+  else if(id==='w-incoming' && j) renderWIncoming();
+  else if(id==='c-complete' && j) renderComplete();
+  else if(id==='w-complete' && j) renderWComplete();
+  $$('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('v-'+id).classList.add('active');
+  const mapViews = ['c-active','w-active'];
+  $('#map-layer').classList.toggle('hidden', !mapViews.includes(id));
+  if(mapViews.includes(id)) setTimeout(applyWorld, 60);
+}
+function startApp(role){
+  if(role==='customer') nav('c-home'); else nav('w-home');
+}
+
+/* ================= MAP ================= */
+function applyWorld(){
+  $('#world').setAttribute('transform','translate(240 400) scale('+worldScale+') translate(-240 -400)');
+}
+function zoom(d){ worldScale = Math.min(1.6, Math.max(0.8, worldScale + d*0.2)); applyWorld(); }
+function setWorkerAt(t){
+  const p = routePath.getPointAtLength(routeLen*t);
+  workerMark.setAttribute('transform','translate('+p.x.toFixed(1)+' '+p.y.toFixed(1)+')');
+}
+function startTravel(){
+  routePath = document.getElementById('route');
+  workerMark = document.getElementById('worker-marker');
+  if(!routePath) return;
+  routeLen = routePath.getTotalLength();
+  workerMark.style.display = 'block';
+  setWorkerAt(0);
+  const t0 = performance.now(), DUR = 20000; /* 20s accelerated "6 min" ride */
+  cancelAnimationFrame(travelRAF);
+  const frame = now => {
+    const j = state.job;
+    if(!j || j.status!=='en_route') return;
+    const t = Math.min(1, (now-t0)/DUR);
+    setWorkerAt(t);
+    const eta = Math.max(0, Math.ceil(6*(1-t)));
+    j.etaMin = eta;
+    updateEtaUI(eta);
+    if(t>=1){ arriveJob(); return; }
+    travelRAF = requestAnimationFrame(frame);
+  };
+  travelRAF = requestAnimationFrame(frame);
+}
+function updateEtaUI(eta){
+  const m = $('#map-eta'); if(m) m.textContent = '🛵 '+eta+' min away';
+  const p = $('#ca-pill'); if(p && state.job && state.job.status==='en_route') p.textContent = 'Arriving in '+eta+' min';
+  const w = $('#wa-pill'); if(w && state.job && state.job.status==='en_route') w.textContent = eta+' min to customer';
+}
+
+/* ================= JOB LIFECYCLE (shared by both apps) ================= */
+function book(){
+  if(state.job && state.job.status==='completed') finalizeCustomerJob();
+  if(state.job && state.job.status!=='completed'){ toast('You already have an active job','error','⚠️'); resumeJob(); return; }
+  const s = selService;
+  state.job = {
+    id:'HS-'+rand(1000,9999), icon:s.icon, service:s.name, meta:s.meta,
+    area:selArea, address:'Flat 4, '+selArea+', Madurai',
+    est:estOf(s), otp:String(rand(1000,9999)),
+    status:'searching', isSynthetic:false, worker:null,
+    etaMin:6, startedAt:0, completedAt:0, durationMin:0, tip:0, rating:5,
+    customer:ME, createdAt:Date.now(),
+  };
+  save();
+  nav('c-finding');
+  startSearch();
+  toast('Request sent to nearby professionals','info','📡');
+}
+function startSearch(){
+  const j = state.job; if(!j || j.status!=='searching') return;
+  let i = 0;
+  $('#find-msg').textContent = SEARCH_MSGS[0];
+  clearInterval(msgTimer);
+  msgTimer = setInterval(()=>{ i=(i+1)%SEARCH_MSGS.length; $('#find-msg').textContent = SEARCH_MSGS[i]; }, 1300);
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=>{
+    if(state.job && state.job.status==='searching') assignWorker(WORKERS.ravi, {});
+  }, 6000);
+  $('#find-chip').textContent = j.icon+' '+j.service+' • '+j.area;
+}
+function cancelRequest(){
+  clearTimeout(searchTimer); clearInterval(msgTimer);
+  state.job = null; save();
+  nav('c-home');
+  toast('Request cancelled','info','↩');
+}
+function assignWorker(w, opts){
+  const j = state.job; if(!j || j.status!=='searching') return;
+  clearTimeout(searchTimer); clearInterval(msgTimer);
+  j.worker = w; j.status = 'en_route'; j.etaMin = 6;
+  save();
+  const lbl = document.getElementById('worker-start-label'); if(lbl) lbl.textContent = w.name.split(' ')[0]+' • start';
+  $('#map-eta').classList.remove('hidden');
+  updateEtaUI(6);
+  toast(w.name+' is on the way','success','🛵');
+  startTravel();
+  renderJob();
+  if(currentView==='c-finding') nav('c-active');
+  if(opts && opts.fromWorker) nav('w-active');
+}
+function arriveJob(){
+  cancelAnimationFrame(travelRAF);
+  const j = state.job; if(!j || j.status!=='en_route') return;
+  setWorkerAt(1);
+  j.status = 'arrived'; save();
+  $('#map-eta').textContent = '✅ Arrived at home';
+  toast(j.worker.name+' has arrived','success','📍');
+  renderJob();
+}
+function arriveNow(){ const j = state.job; if(j && j.status==='en_route') arriveJob(); }
+function verifyOtp(val, silent){
+  const j = state.job; if(!j || j.status!=='arrived') return;
+  if(String(val).trim() === String(j.otp)){
+    j.status = 'in_progress'; j.startedAt = Date.now(); save();
+    $('#map-eta').textContent = '⏱ On site';
+    toast('OTP verified — job timer started','success','⏱');
+    renderJob();
+  } else if(!silent){
+    const el = document.getElementById('wa-otp');
+    if(el){ el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); el.value=''; }
+    toast('Incorrect OTP','error','⚠️');
+  }
+}
+function completeJob(){
+  const j = state.job; if(!j || j.status!=='in_progress') return;
+  j.status = 'completed'; j.completedAt = Date.now();
+  j.durationMin = Math.max(1, Math.round((j.completedAt-j.startedAt)/60000));
+  const net = j.est - FEE;
+  state.earnings += net; state.wJobs += 1;
+  state.workerJobs.push({id:j.id, icon:j.icon, service:j.service, customer:j.customer.name, net, date:today()});
+  save();
+  $('#map-eta').textContent = '✅ Job completed';
+  toast('Job completed','success','✅');
+  renderJob();
+  if(currentView==='w-active') nav('w-complete');
+  if(currentView==='c-active') nav('c-complete');
+}
+function finalizeCustomerJob(){
+  const j = state.job; if(!j || j.status!=='completed') return;
+  const total = j.est + FEE + (j.tip||0);
+  state.customerJobs.push({id:j.id, icon:j.icon, service:j.service, area:j.area, total, rating:j.rating||5, date:today(), worker:(j.worker&&j.worker.name)||'—'});
+  if(j.tip){ state.earnings += j.tip; }
+  state.job = null; save();
+}
+function renderJob(){
+  const j = state.job; if(!j) return;
+  renderCA(); renderWHome(); renderWActive(); renderWIncoming();
+  if(currentView==='c-home') renderCHome();
+}
+
+/* ================= CUSTOMER RENDER ================= */
+function renderCHome(){
+  const wrap = $('#c-active-job'); const j = state.job;
+  if(j){
+    if(j.status==='completed'){
+      wrap.innerHTML = '<div class="mini-job" onclick="openReceipt()"><div class="mj-left"><div class="mj-icon">🧾</div><div><b>Receipt ready</b><div class="muted sm">'+j.service+' • '+rupee(j.est+FEE)+' • '+today()+'</div></div></div><div class="mj-right"><span class="chip chip-dim">View</span><span class="mj-arrow">›</span></div></div>';
+    } else {
+      wrap.innerHTML = '<div class="mini-job pulse-border" onclick="resumeJob()"><div class="mj-left"><div class="mj-icon">'+j.icon+'</div><div><b>'+j.service+'</b><div class="muted sm">'+j.area+' • '+statusLabel(j.status)+'</div></div></div><div class="mj-right">'+statusChip(j.status)+'<span class="mj-arrow">›</span></div></div>';
+    }
+    wrap.style.display = 'block';
+  } else { wrap.style.display = 'none'; wrap.innerHTML = ''; }
+  renderCHistory();
+}
+function resumeJob(){
+  const j = state.job; if(!j) return;
+  if(j.status==='searching') nav('c-finding');
+  else if(j.status==='completed') openReceipt();
+  else nav('c-active');
+}
+function openReceipt(){ renderComplete(); nav('c-complete'); }
+function renderCHistory(){
+  const el = $('#c-history');
+  const list = state.customerJobs.slice(-3).reverse();
+  if(!list.length){ el.innerHTML = '<div class="empty">No past jobs yet. Your bookings will appear here.</div>'; return; }
+  el.innerHTML = list.map(j => '<div class="hist-row"><span class="h-icon">'+j.icon+'</span><div class="h-main"><b>'+j.service+'</b><div class="muted sm">'+j.area+' • '+j.date+'</div></div><div class="h-right"><b>'+rupee(j.total)+'</b><div class="muted sm">★ '+(j.rating||5)+'</div></div></div>').join('');
+}
+function pickService(i){
+  selService = SERVICES[i];
+  $$('#svc-grid .svc').forEach((c,ix)=>c.classList.toggle('active', ix===i));
+  $('#lbl-service-name').textContent = selService.name;
+  $('#lbl-service-icon').textContent = selService.icon;
+  $('#lbl-est').textContent = rupee(selService.from)+' – '+rupee(selService.to);
+  $('#lbl-total').textContent = rupee(estOf(selService)+FEE);
+}
+function onAreaChange(a){ selArea = a; $('#lbl-address').textContent = 'Flat 4, '+a+', Madurai'; }
+function renderCA(){
+  const j = state.job; if(!j) return;
+  const w = j.worker || WORKERS.ravi;
+  $('#ca-worker-name').textContent = w.name;
+  $('#ca-worker-meta').textContent = '★ '+w.rating+' · '+w.jobs+' jobs · Govt ID verified';
+  $('#ca-worker-initials').textContent = w.name.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+  const steps = ['Booked','Worker assigned','On the way','OTP verified','Job in progress','Completed'];
+  const idx = {searching:0, en_route:2, arrived:3, in_progress:4, completed:5}[j.status];
+  $('#ca-timeline').innerHTML = steps.map((s,i)=>'<li class="'+(i<idx?'done':(i===idx?'current':'todo'))+'"><span class="dot">'+(i<idx?'✓':'')+'</span>'+s+'</li>').join('');
+  const boxes = $$('#ca-otp .otp-box');
+  boxes.forEach((b,i)=>{ b.textContent = j.otp[i]; b.classList.toggle('hot', j.status==='arrived'); });
+  $('#ca-otp-hint').textContent =
+    j.status==='arrived' ? 'Give this OTP to '+w.name+' now' :
+    (j.status==='in_progress'||j.status==='completed') ? 'OTP verified ✓' :
+    'Worker will ask for this on arrival';
+  $('#ca-demo-verify').style.display = j.status==='arrived' ? 'block' : 'none';
+  const t = $('#ca-title'), s = $('#ca-sub'), p = $('#ca-pill');
+  if(j.status==='en_route'){ t.textContent='Worker en route'; s.textContent='Track arrival live on the map'; p.textContent='Arriving in '+(j.etaMin!=null?j.etaMin:6)+' min'; p.className='pill info'; }
+  else if(j.status==='arrived'){ t.textContent='Worker has arrived'; s.textContent='Share the OTP to start the job'; p.textContent='At your door'; p.className='pill ok'; }
+  else if(j.status==='in_progress'){ t.textContent='Job in progress'; s.textContent=w.name+' is at your home'; p.textContent='⏱ '+fmtElapsed(j.startedAt); p.className='pill ok'; }
+  else if(j.status==='completed'){ t.textContent='Job completed'; s.textContent='Thank you for using House Synk'; p.textContent='Done'; p.className='pill dim'; }
+  $('#ca-note').textContent =
+    j.status==='in_progress' ? 'Keep the door accessible. You\'ll be billed on completion.' :
+    j.status==='arrived' ? w.name+' is waiting outside. Share the OTP to begin.' :
+    'Your '+j.service.toLowerCase()+' job is with a verified professional.';
+}
+function copyOtp(){
+  const j = state.job; if(!j) return;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(j.otp).then(()=>toast('OTP copied','success','📋'), ()=>toast('OTP: '+j.otp,'info','🔢'));
+  } else toast('OTP: '+j.otp,'info','🔢');
+}
+function demoVerify(){ const j = state.job; if(j && j.status==='arrived') verifyOtp(j.otp, true); }
+function renderComplete(){
+  const j = state.job; if(!j) return;
+  tip = j.tip || 0; rating = j.rating || 5;
+  $('#cc-id').textContent = j.id+' • '+today();
+  $('#cc-service').textContent = j.icon+' '+j.service;
+  $('#cc-worker').textContent = (j.worker?j.worker.name:'—')+' • ★ '+(j.worker?j.worker.rating:'—');
+  $('#cc-duration').textContent = (j.durationMin||1)+' min';
+  $('#cc-fee').textContent = rupee(j.est);
+  updateTipUI(); renderStars();
+}
+function updateTipUI(){
+  const j = state.job; if(!j) return;
+  $('#cc-tip').textContent = rupee(tip);
+  $('#cc-total').textContent = rupee(j.est + FEE + tip);
+  $$('.tip-chip').forEach(c=>c.classList.toggle('sel', +c.dataset.tip === tip));
+}
+function setTip(v){ tip = v; if(state.job) state.job.tip = v; updateTipUI(); save(); }
+function renderStars(){ $$('.star').forEach((s,i)=>s.classList.toggle('on', i<rating)); }
+function setRating(v){ rating = v; if(state.job) state.job.rating = v; renderStars(); save(); }
+function ccDone(){
+  const j = state.job; if(!j) return;
+  j.tip = tip; j.rating = rating; save();
+  finalizeCustomerJob();
+  nav('c-home');
+  toast('Payment confirmed. Thanks for rating!','success','✅');
+}
+
+/* ================= WORKER RENDER ================= */
+function renderWHome(){
+  const h = new Date().getHours();
+  $('#w-greet').textContent = (h<12?'Good morning':h<17?'Good afternoon':'Good evening') + ', Ravi';
+  $('#w-earn').textContent = rupee(state.earnings);
+  $('#w-jobs').textContent = state.wJobs;
+  $('#w-rating').textContent = state.rating.toFixed(1);
+  $('#w-online-label').textContent = state.online ? 'Online — receiving requests' : 'Offline — requests paused';
+  $('#w-online').classList.toggle('on', state.online);
+  const pill = $('#w-online-pill'); pill.textContent = state.online ? 'Online' : 'Offline'; pill.className = 'pill ' + (state.online?'ok':'dim');
+  const wrap = $('#w-banner'); const j = state.job;
+  if(!j){
+    wrap.innerHTML = ''; $('#w-sim').style.display = 'block';
+  } else if(j.status==='completed'){
+    wrap.innerHTML = '<div class="mini-job static"><div class="mj-left"><div class="mj-icon">✅</div><div><b>Last job done</b><div class="muted sm">'+j.service+' • +'+rupee(j.est-FEE)+'</div></div></div></div>';
+    $('#w-sim').style.display = 'block';
+  } else if(j.isSynthetic || (j.worker && j.worker.name===WORKERS.ravi.name)){
+    if(j.status==='searching' && !j.worker){
+      wrap.innerHTML = '<div class="mini-job pulse-border" onclick="openIncoming()"><div class="mj-left"><div class="mj-icon">'+j.icon+'</div><div><b>New request</b><div class="muted sm">'+j.service+' • '+j.area+' • '+rupee(j.est)+'</div></div></div><div class="mj-right"><span class="chip chip-warn">1 new</span><span class="mj-arrow">›</span></div></div>';
+    } else {
+      wrap.innerHTML = '<div class="mini-job" onclick="nav(\'w-active\')"><div class="mj-left"><div class="mj-icon">'+j.icon+'</div><div><b>'+j.service+'</b><div class="muted sm">'+j.customer.name+' • '+statusLabel(j.status)+'</div></div></div><div class="mj-right">'+statusChip(j.status)+'<span class="mj-arrow">›</span></div></div>';
+    }
+    $('#w-sim').style.display = 'none';
+  } else {
+    wrap.innerHTML = '<div class="mini-job static"><div class="mj-left"><div class="mj-icon">ℹ️</div><div><b>Matched elsewhere</b><div class="muted sm">'+(j.worker?j.worker.name:'Another pro')+' took this job</div></div></div></div>';
+    $('#w-sim').style.display = 'none';
+  }
+  renderWHistory();
+}
+function openIncoming(){ renderWIncoming(); nav('w-incoming'); }
+function renderWHistory(){
+  const el = $('#w-history');
+  const list = state.workerJobs.slice(-3).reverse();
+  if(!list.length){ el.innerHTML = '<div class="empty">Completed jobs will appear here with your payouts.</div>'; return; }
+  el.innerHTML = list.map(j => '<div class="hist-row"><span class="h-icon">'+j.icon+'</span><div class="h-main"><b>'+j.service+'</b><div class="muted sm">'+j.customer+' • '+j.date+'</div></div><div class="h-right"><b class="pos">+'+rupee(j.net)+'</b></div></div>').join('');
+}
+function toggleOnline(){
+  state.online = !state.online; save();
+  renderWHome();
+  toast(state.online ? 'You are online — receiving requests' : 'You are offline', 'info', state.online?'🟢':'⚫');
+}
+function simulateIncoming(){
+  if(state.job && state.job.status==='completed') finalizeCustomerJob();
+  const j = state.job;
+  if(j && j.status!=='completed'){
+    if(j.status==='searching') openIncoming(); else nav('w-active');
+    return;
+  }
+  const s = SERVICES[rand(0, SERVICES.length-1)];
+  const area = AREAS[rand(0, AREAS.length-1)];
+  state.job = {
+    id:'HS-'+rand(1000,9999), icon:s.icon, service:s.name, meta:s.meta,
+    area, address:'House '+rand(2,120)+', '+area+', Madurai',
+    est:estOf(s), otp:String(rand(1000,9999)),
+    status:'searching', isSynthetic:true, worker:null,
+    etaMin:6, startedAt:0, completedAt:0, durationMin:0, tip:0, rating:5,
+    customer:{name:SYNTH_CUSTOMERS[rand(0,SYNTH_CUSTOMERS.length-1)], upi:'—'},
+    createdAt:Date.now(),
+  };
+  save();
+  renderWHome();
+  openIncoming();
+  toast('New request received','info','🔔');
+}
+function renderWIncoming(){
+  const j = state.job; if(!j) return;
+  $('#wi-icon').textContent = j.icon;
+  $('#wi-service').textContent = j.service;
+  $('#wi-meta').textContent = j.area+' • '+(j.worker?j.worker.distance:'1.4 km')+' • est. '+rupee(j.est);
+  $('#wi-cust').textContent = j.customer.name;
+  $('#wi-earn').textContent = rupee(j.est-FEE);
+  const demo = $('#wi-otp-demo');
+  if(j.isSynthetic){ demo.style.display='flex'; demo.innerHTML = 'Demo mode — the customer will share OTP <b>'+j.otp+'</b>'; }
+  else { demo.style.display='none'; }
+}
+function acceptJob(){
+  const j = state.job; if(!j) return;
+  assignWorker(WORKERS.ravi, {fromWorker:true});
+}
+function declineJob(){
+  const j = state.job; if(!j || j.status!=='searching') return;
+  if(j.isSynthetic){
+    toast('Request declined','info','↩');
+    nav('w-home');
+    return;
+  }
+  clearTimeout(searchTimer); clearInterval(msgTimer);
+  if(currentView==='c-finding') $('#find-msg').textContent = 'Ravi declined — expanding search radius…';
+  searchTimer = setTimeout(()=>{
+    if(state.job && state.job.status==='searching') assignWorker(WORKERS.karthik, {});
+  }, 5000);
+  toast('Request declined. Customer will be matched with another pro.','info','↩');
+  nav('w-home');
+}
+function renderWActive(){
+  const j = state.job; if(!j || !j.worker) return;
+  const isMine = j.isSynthetic || j.worker.name === WORKERS.ravi.name;
+  $('#wa-cust').textContent = j.customer.name+' • '+j.area;
+  $('#wa-cust-sub').textContent = j.icon+' '+j.service+' • est. '+rupee(j.est)+' • '+j.id;
+  $('#wa-cust-avatar').textContent = j.customer.name[0];
+  const body = $('#wa-body');
+  const custCard = '<div class="row-customer"><div class="avatar sm">'+j.customer.name[0]+'</div><div style="flex:1;min-width:0"><b>'+j.customer.name+'</b><div class="muted sm">'+j.address+'</div></div></div>';
+  if(!isMine){
+    $('#wa-title').textContent = 'Handled by another pro';
+    $('#wa-pill').textContent = statusLabel(j.status); $('#wa-pill').className = 'pill dim';
+    body.innerHTML = '<div class="notice">This job is being handled by <b style="color:var(--text)">'+j.worker.name+'</b>.<br>Track it here if the customer calls you back.</div><button class="btn btn-outline" onclick="nav(\'w-home\')">Back to dashboard</button>';
+    return;
+  }
+  if(j.status==='en_route'){
+    $('#wa-title').textContent = 'Navigate to customer';
+    $('#wa-pill').textContent = (j.etaMin!=null?j.etaMin:6)+' min away'; $('#wa-pill').className = 'pill info';
+    body.innerHTML = custCard +
+      '<button class="btn btn-outline section" onclick="toast(\'Navigating via Google Maps (demo)\',\'info\',\'🧭\')">🧭 Start navigation</button>' +
+      '<button class="btn btn-success section" onclick="arriveNow()">📍 I have arrived</button>' +
+      '<p class="muted sm" style="margin-top:10px;text-align:center">Demo: arrival also triggers automatically as the marker reaches the home.</p>';
+  } else if(j.status==='arrived'){
+    $('#wa-title').textContent = 'Verify start OTP';
+    $('#wa-pill').textContent = 'At customer'; $('#wa-pill').className = 'pill ok';
+    body.innerHTML = custCard +
+      '<p class="muted" style="font-size:.88rem;line-height:1.5;margin-top:12px">Ask the customer for the 4-digit OTP to officially start the job timer.</p>' +
+      (j.isSynthetic ? '<div class="demo-otp">Demo mode — customer will share <b>'+j.otp+'</b></div>' : '') +
+      '<input id="wa-otp" class="otp-input section" type="text" inputmode="numeric" maxlength="4" placeholder="••••" oninput="otpType(this);if(this.value.length===4)verifyOtp(this.value)" />' +
+      '<button class="btn btn-primary section" onclick="verifyOtp(document.getElementById(\'wa-otp\').value)">Start job</button>';
+  } else if(j.status==='in_progress'){
+    $('#wa-title').textContent = 'Job in progress';
+    $('#wa-pill').textContent = 'Timer running'; $('#wa-pill').className = 'pill ok';
+    body.innerHTML = '<div class="timer-big" id="wa-timer">'+fmtElapsed(j.startedAt)+'</div>' + custCard +
+      '<button class="btn btn-outline section" onclick="toast(\'Calling '+j.customer.name+'… (demo)\',\'info\',\'📞\')">📞 Contact customer</button>' +
+      '<button class="btn btn-success section" onclick="completeJob()">✅ Mark job complete</button>';
+  } else if(j.status==='completed'){
+    $('#wa-title').textContent = 'Job completed';
+    $('#wa-pill').textContent = 'Done'; $('#wa-pill').className = 'pill dim';
+    body.innerHTML = '<div class="notice">This job is complete. Earnings updated.</div><button class="btn btn-primary" onclick="nav(\'w-home\')">Back to dashboard</button>';
+  }
+}
+function otpType(el){ el.value = el.value.replace(/\D/g,'').slice(0,4); }
+function renderWComplete(){
+  const j = state.job; if(!j) return;
+  const net = j.est - FEE;
+  $('#wc-cust').textContent = j.customer.name+' • '+j.area+' • '+j.id;
+  $('#wc-amount').textContent = '+'+rupee(net);
+  $('#wc-base').textContent = rupee(j.est);
+  $('#wc-fee').textContent = '−'+rupee(FEE);
+  $('#wc-net').textContent = rupee(net);
+  const el = document.getElementById('wc-check-svg');
+  if(el) el.replaceWith(el.cloneNode(true)); /* replay check animation */
+}
+
+/* ================= TICK ================= */
+setInterval(()=>{
+  const j = state.job; if(!j) return;
+  if(j.status==='in_progress'){
+    const e = fmtElapsed(j.startedAt);
+    if(currentView==='c-active'){ const p = $('#ca-pill'); if(p) p.textContent = '⏱ '+e; }
+    const wt = document.getElementById('wa-timer'); if(wt) wt.textContent = e;
+    if(currentView==='c-active' || currentView==='w-active'){ const m = $('#map-eta'); if(m) m.textContent = '⏱ On site • '+e; }
+  }
+}, 1000);
+
+/* ================= RESET ================= */
+function resetDemo(){
+  if(!resetArmed){
+    resetArmed = true;
+    const a = document.getElementById('reset-link');
+    a.textContent = 'Tap again to confirm reset'; a.classList.add('armed');
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(()=>{ resetArmed=false; a.textContent='Reset demo'; a.classList.remove('armed'); }, 3000);
+    return;
+  }
+  try{ localStorage.removeItem(LS_KEY); }catch(e){}
+  location.reload();
+}
+
+/* ================= INIT ================= */
+function init(){
+  $('#svc-grid').innerHTML = SERVICES.map((s,i) =>
+    '<div class="card svc'+(i===0?' active':'')+'" onclick="pickService('+i+')"><div class="svc-top"><span class="emoji">'+s.icon+'</span><span class="price">from '+rupee(s.from)+'</span></div><div><div class="name">'+s.name+'</div><div class="meta">'+s.meta+'</div></div></div>'
+  ).join('');
+  $('#area-select').innerHTML = AREAS.map(a=>'<option>'+a+'</option>').join('');
+  pickService(0);
+  const j = state.job;
+  if(j && j.status==='searching') startSearch();
+  else if(j && j.status==='en_route') startTravel();
+  renderCHome(); renderWHome();
+}
+init();
+</script>
+</body>
+</html>
